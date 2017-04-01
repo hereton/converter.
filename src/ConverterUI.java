@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,6 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+/**
+ * User Interface for Length converter
+ * 
+ * @author Totsapon Menkul
+ *
+ */
 public class ConverterUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private UnitConverter uc;
@@ -31,6 +38,9 @@ public class ConverterUI extends JFrame {
 		initComponents();
 	}
 
+	/**
+	 * create components
+	 */
 	public void initComponents() {
 		JPanel panel = new JPanel();
 		JPanel downPanel = new JPanel();
@@ -46,6 +56,10 @@ public class ConverterUI extends JFrame {
 		group = new ButtonGroup();
 		group.add(LtoR);
 		group.add(RtoL);
+
+		// set default
+		LtoR.setSelected(true);
+		rightField.setEditable(false);
 
 		Unit[] lengths = Length.values();
 		for (Unit unit : lengths) {
@@ -83,16 +97,27 @@ public class ConverterUI extends JFrame {
 	class EnterListener implements ActionListener, KeyListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			if (isRight) {
-				double input = Double.parseDouble(rightField.getText());
-				Unit fromUnit = (Unit) unit2.getSelectedItem();
-				Unit toUnit = (Unit) unit1.getSelectedItem();
-				leftField.setText(uc.convert(input, fromUnit, toUnit) + "");
-			} else {
-				double input = Double.parseDouble(leftField.getText());
-				Unit fromUnit = (Unit) unit1.getSelectedItem();
-				Unit toUnit = (Unit) unit2.getSelectedItem();
-				rightField.setText(uc.convert(input, fromUnit, toUnit) + "");
+
+			try {
+				rightField.setForeground(null);
+				leftField.setForeground(null);
+				if (isRight) {
+					double input = Double.parseDouble(rightField.getText().trim());
+					Unit fromUnit = (Unit) unit2.getSelectedItem();
+					Unit toUnit = (Unit) unit1.getSelectedItem();
+					leftField.setText(uc.convert(input, fromUnit, toUnit) + "");
+				} else {
+					double input = Double.parseDouble(leftField.getText().trim());
+					Unit fromUnit = (Unit) unit1.getSelectedItem();
+					Unit toUnit = (Unit) unit2.getSelectedItem();
+					rightField.setText(uc.convert(input, fromUnit, toUnit) + "");
+				}
+			} catch (NumberFormatException e) {
+				if (isRight) {
+					rightField.setForeground(Color.red);
+				} else {
+					leftField.setForeground(Color.red);
+				}
 			}
 		}
 
