@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -53,6 +55,8 @@ public class ConverterUI extends JFrame {
 
 		EnterListener enterListener = new EnterListener();
 		convertButton.addActionListener(enterListener);
+		leftField.addKeyListener(enterListener);
+		rightField.addKeyListener(enterListener);
 		ClearListener clearListener = new ClearListener();
 		clearButton.addActionListener(clearListener);
 		PickListener pickListener = new PickListener();
@@ -76,7 +80,7 @@ public class ConverterUI extends JFrame {
 
 	}
 
-	class EnterListener implements ActionListener {
+	class EnterListener implements ActionListener, KeyListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			if (isRight) {
@@ -89,10 +93,24 @@ public class ConverterUI extends JFrame {
 				Unit fromUnit = (Unit) unit1.getSelectedItem();
 				Unit toUnit = (Unit) unit2.getSelectedItem();
 				rightField.setText(uc.convert(input, fromUnit, toUnit) + "");
-
 			}
-
 		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+		}
+
+		@Override
+		public void keyPressed(KeyEvent event) {
+			if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+				actionPerformed(null);
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+		}
+
 	}
 
 	class PickListener implements ActionListener {
@@ -111,27 +129,18 @@ public class ConverterUI extends JFrame {
 				rightField.setEditable(false);
 				isRight = false;
 			}
-
 		}
 	}
 
 	class ClearListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			leftField.setText("");
 			rightField.setText("");
 		}
-
 	}
 
 	public void run() {
 		this.setVisible(true);
-	}
-
-	public static void main(String[] args) {
-		UnitConverter uc = new UnitConverter();
-		ConverterUI ui = new ConverterUI(uc);
-		ui.run();
 	}
 }
